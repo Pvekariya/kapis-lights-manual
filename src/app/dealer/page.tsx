@@ -9,6 +9,8 @@ export default function Dealer() {
   const [form, setForm] = useState({
     name: "",
     email: "",
+    phone: "",
+    product: "",
     message: "",
   });
 
@@ -35,7 +37,7 @@ export default function Dealer() {
     setLoading(false);
 
     if (res.ok) {
-      setForm({ name: "", email: "", message: "" });
+      setForm({ name: "", email: "", phone: "", product: "", message: "" });
       setSuccess(true);
     }
   };
@@ -68,6 +70,36 @@ export default function Dealer() {
               onChange={handleChange}
               className="w-full p-4 bg-purple-900 rounded"
             />
+
+            <input
+              name="phone"
+              value={form.phone}
+              placeholder="Phone Number"
+              onChange={handleChange}
+              className="w-full p-4 bg-purple-900 rounded"
+              required
+            />
+
+            <select
+              name="product"
+              value={form.product}
+              onChange={handleChange}
+              className="w-full p-4 bg-purple-900 rounded text-white"
+              required
+            >
+              <option value="">Select Product Range</option>
+              <option value="0.5 Watt LED Bulb">0.5 Watt LED Bulb</option>
+              <option value="0.5 Watt 2-Pin Plug-in">0.5 Watt 2-Pin Plug-in</option>
+              <option value="0.5 Watt Prism">0.5 Watt Prism</option>
+              <option value="5W Candle LED Bulb">5W Candle LED Bulb</option>
+              <option value="Gramin 4W">Gramin 4W</option>
+              <option value="Gramin 6W">Gramin 6W</option>
+              <option value="Gramin 9W">Gramin 9W</option>
+              <option value="5W Pixel LED">5W Pixel LED</option>
+              <option value="10W Pixel LED">10W Pixel LED</option>
+              <option value="12W Jumbo RGB">12W Jumbo RGB</option>
+              <option value="Flower RGB Lamp">Flower RGB Lamp</option>
+            </select>
 
             <textarea
               name="message"

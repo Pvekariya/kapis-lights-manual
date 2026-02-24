@@ -26,6 +26,7 @@ export async function POST(req: Request) {
         <p><b>Name:</b> ${data.name}</p>
         <p><b>Company:</b> ${data.company}</p>
         <p><b>Phone:</b> ${data.phone}</p>
+        <p><b>Product Enquiry:</b> ${data.product}</p>
         <p><b>Email:</b> ${data.email}</p>
         <p><b>Message:</b> ${data.message}</p>
       `,
