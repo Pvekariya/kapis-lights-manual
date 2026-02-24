@@ -57,7 +57,7 @@ export default function Dealer() {
 
             <input
               name="name"
-              value={form.name}
+              value={form.name || ""}
               placeholder="Name"
               onChange={handleChange}
               className="w-full p-4 bg-purple-900 rounded"
@@ -65,7 +65,7 @@ export default function Dealer() {
 
             <input
               name="email"
-              value={form.email}
+              value={form.email || ""}
               placeholder="Email"
               onChange={handleChange}
               className="w-full p-4 bg-purple-900 rounded"
@@ -73,7 +73,7 @@ export default function Dealer() {
 
             <input
               name="phone"
-              value={form.phone}
+              value={form.phone || ""}
               placeholder="Phone Number"
               onChange={handleChange}
               className="w-full p-4 bg-purple-900 rounded"
@@ -82,7 +82,7 @@ export default function Dealer() {
 
             <select
               name="product"
-              value={form.product}
+              value={form.product || ""}
               onChange={handleChange}
               className="w-full p-4 bg-purple-900 rounded text-white"
               required
@@ -103,7 +103,7 @@ export default function Dealer() {
 
             <textarea
               name="message"
-              value={form.message}
+              value={form.message || ""}
               placeholder="Message"
               onChange={handleChange}
               className="w-full p-4 bg-purple-900 rounded"

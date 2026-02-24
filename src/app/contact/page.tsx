@@ -31,7 +31,7 @@ export default function Contact() {
           </p>
 
           <p>
-            <b>Email:</b> psvekariya0092@gmail.com
+            <b>Email:</b> kapislights@gmail.com
           </p>
 
           <div className="rounded-xl overflow-hidden h-80">
