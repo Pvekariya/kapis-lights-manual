@@ -45,7 +45,7 @@ export default function About() {
 
         <section className="mt-16 bg-[#2b083d] p-10 rounded-xl">
           <h2 className="text-2xl font-bold text-yellow-300 mb-4">
-            MSME Registered Enterprise
+            MSME Registered 
           </h2>
 
           <p className="text-gray-200">
