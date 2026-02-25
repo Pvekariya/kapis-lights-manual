@@ -45,22 +45,13 @@ export default function About() {
 
         <section className="mt-16 bg-[#2b083d] p-10 rounded-xl">
           <h2 className="text-2xl font-bold text-yellow-300 mb-4">
-            MSME Registration
+            MSME Registered Enterprise
           </h2>
 
-          <p className="text-gray-200 mb-4">
-            Kapis Lights is a Government of India registered Micro Enterprise under the
-            Ministry of Micro, Small & Medium Enterprises (MSME).
+          <p className="text-gray-200">
+            Kapis Lights is a Government of India registered Micro Enterprise 
+            (Udyam Registration No: UDYAM-DL-11-0041596) under the Ministry of MSME.
           </p>
-
-          <div className="space-y-2 text-gray-300">
-            <p><span className="font-semibold text-gray-100">Udyam Registration Number:</span> UDYAM-DL-11-0041596</p>
-            <p><span className="font-semibold text-gray-100">Enterprise Type:</span> Micro Enterprise</p>
-            <p><span className="font-semibold text-gray-100">Major Activity:</span> Manufacturing</p>
-            <p><span className="font-semibold text-gray-100">Date of Registration:</span> 16/09/2022</p>
-            <p><span className="font-semibold text-gray-100">Established:</span> 01/08/2021</p>
-            <p><span className="font-semibold text-gray-100">Location:</span> DLF Industrial Area, Moti Nagar, New Delhi – 110015</p>
-          </div>
         </section>
 
         <section className="mt-16">
