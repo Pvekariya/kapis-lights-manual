@@ -242,10 +242,10 @@ export default function Products() {
                 <Link href="/products/pixel-10w-warmwhite">
                   <div className="bg-[#1f0630] p-6 rounded-lg hover:scale-105 transition cursor-pointer glow">
                     <h3 className="text-xl font-bold text-yellow-300">
-                      Pixel 10W Warm White
+                      Pixel LED Bulb 10W Warm White
                     </h3>
                     <p className="text-gray-300 mt-2">
-                      2 Wire Copper • 240V AC
+                      1 pcs Box • 20 pcs Outer Box • 300 pcs Master Carton
                     </p>
                   </div>
                 </Link>
@@ -253,10 +253,10 @@ export default function Products() {
                 <Link href="/products/pixel-ws2811-12w">
                   <div className="bg-[#1f0630] p-6 rounded-lg hover:scale-105 transition cursor-pointer glow">
                     <h3 className="text-xl font-bold text-yellow-300">
-                      Pixel LED WS2811 RGB (12W / 12V DC)
+                      Pixel LED Bulb WS2811 RGB/Warm White  (12W / 12V DC)
                     </h3>
                     <p className="text-gray-300 mt-2">
-                      Available in RGB & Warm White • With Wire
+                      1 pcs Box • 20 pcs Outer Box • 300 pcs Master Carton
                     </p>
                   </div>
                 </Link>

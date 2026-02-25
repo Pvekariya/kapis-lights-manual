@@ -236,6 +236,7 @@ export const products = {
     description: "WS2811 digital pixel LED module suitable for decorative and architectural lighting.",
     specs: [
       "12 Watt Power",
+      "12 LED Chips",
       "12V DC Input",
       "WS2811 IC Control",
       "Available in RGB and Warm White",

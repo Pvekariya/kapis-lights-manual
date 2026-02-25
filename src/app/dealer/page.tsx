@@ -95,10 +95,13 @@ export default function Dealer() {
               <option value="Gramin 4W">Gramin 4W</option>
               <option value="Gramin 6W">Gramin 6W</option>
               <option value="Gramin 9W">Gramin 9W</option>
-              <option value="5W Pixel LED">5W Pixel LED</option>
-              <option value="10W Pixel LED">10W Pixel LED</option>
-              <option value="12W Jumbo RGB">12W Jumbo RGB</option>
-              <option value="Flower RGB Lamp">Flower RGB Lamp</option>
+              <option value="12W Pixel LED RGB">12W Pixel LED RGB</option>
+              <option value="12W Pixel LED Warm White">12W Pixel LED Warm White</option>
+              <option value="10W Pixel LED Warm White">10W Pixel LED Warm White</option>
+              <option value="12W Metallic Jumbo RGB">12W Metallic Jumbo RGB</option>
+              <option value="12W Metallic Jumbo Motor RGB">12W Metalic Jumbo Motor RGB</option>
+              <option value="5W Metallic Flower RGB Lamp">5W Metallic Flower RGB Lamp</option>
+              <option value="9W Metallic RGB Lamp">9W Metallic RGB Lamp</option>
             </select>
 
             <textarea
