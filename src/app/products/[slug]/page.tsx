@@ -42,10 +42,13 @@ export default function ProductPage() {
   let filteredImages = product.images.filter((img: string) => {
     const lowerImg = img.toLowerCase();
 
+    const shouldSkipType = slug === "half-2pin" || slug === "half-prism";
+
     // TYPE MATCH (checks full path, not just filename)
-    const matchesType = type
-      ? lowerImg.includes(type.toLowerCase())
-      : true;
+    const matchesType =
+      !shouldSkipType && product.types.length > 1 && type
+        ? lowerImg.includes(type.toLowerCase())
+        : true;
 
     // COLOR MATCH (strict white handling)
     let matchesColor = true;

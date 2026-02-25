@@ -26,7 +26,11 @@ export const products = {
     colors: ["Blue","Green","Orange","Pink","Red","RGB","Warm White","White","Yellow"],
     types: ["B22","E27"],
     description: "Mini decorative LED bulb ideal for festive and decorative lighting.",
-    specs: ["360 pcs master carton","Energy efficient","Multi-color variants"],
+    specs: [
+      "Energy efficient",
+      "Multi-color variants",
+      "6 pcs Blister Pack • 360 pcs Master Carton"
+    ],
   },
 
   "half-2pin": {
@@ -45,7 +49,12 @@ export const products = {
     colors: ["Blue","Green","Orange","Pink","Red","RGB","Warm White","White","Yellow"],
     types: ["2-Pin"],
     description: "Decorative 2-pin plug-in mini LED bulb.",
-    specs: ["Decorative series","Energy efficient","Multiple color options"],
+    specs: [
+      "Decorative series",
+      "Energy efficient",
+      "Multiple color options",
+      "10 pcs Box • 300 pcs Master Carton"
+    ],
   },
 
   "half-prism": {
@@ -63,7 +72,12 @@ export const products = {
     colors: ["Blue","Green","Orange","Pink","Red","RGB","White","Yellow"],
     types: ["Prism"],
     description: "Prism style decorative LED bulb.",
-    specs: ["High brightness","Decorative lighting","Festival use"],
+    specs: [
+      "High brightness",
+      "Decorative lighting",
+      "Festival use",
+      "6 pcs Blister Packing • 360 pcs Master Carton"
+    ],
   },
 
   fridge: {
@@ -104,7 +118,12 @@ export const products = {
     colors: ["RGB"],
     types: ["5W"],
     description: "Flower-shaped decorative RGB lamp.",
-    specs: ["Festival lighting","Smart IC design","Decorative series"],
+    specs: [
+      "Festival lighting",
+      "Smart IC design",
+      "Decorative series",
+      "1 pcs Box • 20 pcs Outer Box • 200 pcs Master Carton"
+    ],
   },
 
   jumbo: {
@@ -117,7 +136,12 @@ export const products = {
     colors: ["Golden","Blue","Pink"],
     types: ["12W"],
     description: "Premium rotating jumbo RGB lamp.",
-    specs: ["High brightness","Smart IC PCB","Decorative lighting"],
+    specs: [
+      "High brightness",
+      "Smart IC Rotation PCB",
+      "Decorative lighting",
+      "1 pcs Box • 60 pcs Master Carton"
+    ],
   },
 
   jumbomotor: {
@@ -128,7 +152,13 @@ export const products = {
     colors: ["RGB"],
     types: ["Motor Version"],
     description: "Motor powered rotating jumbo decorative lamp.",
-    specs: ["Motor powered","Festival lighting","Premium build"],
+    specs: [
+      "Motor powered",
+      "Steel Motor Shafting",
+      "Festival lighting",
+      "Premium build",
+      "1 pcs Box • 60 pcs Master Carton"
+    ],
   },
 
   "9-watt": {
@@ -139,7 +169,12 @@ export const products = {
     colors: ["RGB"],
     types: ["9W"],
     description: "Compact RGB decorative lamp.",
-    specs: ["Color rotation","Energy efficient","Decorative use"],
+    specs: [
+      "Color rotation",
+      "Energy efficient",
+      "Decorative use",
+      "1 pcs Box • 25 pcs Master Carton"
+    ],
   },
 
   "gramin-4w": {
@@ -150,7 +185,12 @@ export const products = {
     colors: ["White"],
     types: ["4W"],
     description: "Affordable rural lighting solution.",
-    specs: ["Energy efficient","Durable build","Rural lighting series"],
+    specs: [
+      "Energy efficient",
+      "Durable build",
+      "Rural lighting series",
+      "1 pcs Box • 20 pcs Outer Box • 300 pcs Master Carton"
+    ],
   },
 
   "gramin-6w": {
@@ -161,7 +201,12 @@ export const products = {
     colors: ["White"],
     types: ["6W"],
     description: "Affordable rural lighting solution.",
-    specs: ["Energy efficient","Durable build","Rural lighting series"],
+    specs: [
+      "Energy efficient",
+      "Durable build",
+      "Rural lighting series",
+      "1 pcs Box • 20 pcs Outer Box • 180 pcs Master Carton"
+    ],
   },
 
   "gramin-9w": {
@@ -172,29 +217,44 @@ export const products = {
     colors: ["White"],
     types: ["9W"],
     description: "Affordable rural lighting solution.",
-    specs: ["Energy efficient","Durable build","Rural lighting series"],
+    specs: [
+      "Energy efficient",
+      "Durable build",
+      "Rural lighting series",
+      "1 pcs Box • 20 pcs Outer Box • 200 pcs Master Carton"
+    ],
   },
 
-  "pixel-5w": {
-    title: "5W Pixel LED Bulb",
+  "pixel-ws2811-12w": {
+    title: "Pixel LED WS2811 RGB",
     images: [
-      "/products/pixel/5W.jpg",
+      "/products/pixel/12W RGB with Wire.jpg",
+      "/products/pixel/12W Warm White with Wire.jpg",
     ],
-    colors: ["RGB"],
-    types: ["5W"],
-    description: "Advanced digital decorative lighting solution.",
-    specs: ["Digital IC control","Multi pattern lighting","High brightness"],
+    colors: ["RGB", "Warm White"],
+    types: ["12W / 12V DC"],
+    description: "WS2811 digital pixel LED module suitable for decorative and architectural lighting.",
+    specs: [
+      "12 Watt Power",
+      "12V DC Input",
+      "WS2811 IC Control",
+      "Available in RGB and Warm White",
+    ],
   },
 
-  "pixel-10w": {
-    title: "10W Pixel LED Bulb",
+  "pixel-10w-warmwhite": {
+    title: "Pixel 10W Warm White",
     images: [
-      "/products/pixel/10W.jpg",
+      "/products/pixel/10W Warm White with Wire.jpg",
     ],
-    colors: ["RGB"],
+    colors: ["Warm White"],
     types: ["10W"],
-    description: "Advanced digital decorative lighting solution.",
-    specs: ["Digital IC control","Multi pattern lighting","High brightness"],
+    description: "High quality pixel LED in Warm White.",
+    specs: [
+      "2 Wire Copper",
+      "240V AC",
+      "Decorative Lighting",
+    ],
   },
 
 };

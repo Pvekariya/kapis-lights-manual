@@ -70,8 +70,11 @@ export default function Products() {
                     <h3 className="text-xl font-bold text-yellow-300">
                       0.5 Watt LED Bulb
                     </h3>
-                    <p className="text-gray-300 mt-2">
-                      White, Yellow, Blue, Red, Green, Pink, Orange, Purple, Warm White, RGB
+                    <p className="mt-2 text-gray-300">
+                      6 pcs Blister Pack • 360 pcs Master Carton
+                    </p>
+                    <p className="mt-2 text-gray-400">
+                      B22, E27
                     </p>
                   </div>
                 </Link>
@@ -81,8 +84,8 @@ export default function Products() {
                     <h3 className="text-xl font-bold text-yellow-300">
                       0.5 Watt 2-Pin Plug-in LED
                     </h3>
-                    <p className="text-gray-300 mt-2">
-                      Blue, Green, Orange, Pink, Red, RGB, Warm White, White, Yellow
+                    <p className="mt-2 text-gray-300">
+                      10 pcs Box • 300 pcs Master Carton
                     </p>
                   </div>
                 </Link>
@@ -92,8 +95,8 @@ export default function Products() {
                     <h3 className="text-xl font-bold text-yellow-300">
                       0.5 Watt Prism LED
                     </h3>
-                    <p className="text-gray-300 mt-2">
-                      Blue, Green, Orange, Pink, Red, RGB, White, Yellow
+                    <p className="mt-2 text-gray-300">
+                      6 pcs Blister Packing • 360 pcs Master Carton
                     </p>
                   </div>
                 </Link>
@@ -124,8 +127,8 @@ export default function Products() {
                     <h3 className="text-xl font-bold text-yellow-300">
                       5W Metallic Flower RGB Lamp
                     </h3>
-                    <p className="text-gray-300 mt-2">
-                      9 Functions • Decorative Lighting
+                    <p className="mt-2 text-gray-300">
+                      1 pcs Box • 20 pcs Outer Box • 200 pcs Master Carton
                     </p>
                   </div>
                 </Link>
@@ -135,8 +138,8 @@ export default function Products() {
                     <h3 className="text-xl font-bold text-yellow-300">
                       12W Metallic Big Jumbo RGB
                     </h3>
-                    <p className="text-gray-300 mt-2">
-                      18 Functions • Smart IC PCB Rotating Bulb
+                    <p className="mt-2 text-gray-300">
+                      1 pcs Box • 60 pcs Master Carton
                     </p>
                   </div>
                 </Link>
@@ -146,8 +149,8 @@ export default function Products() {
                     <h3 className="text-xl font-bold text-yellow-300">
                       12W Big Jumbo With Motor RGB
                     </h3>
-                    <p className="text-gray-300 mt-2">
-                      High Rotation Decorative Lamp
+                    <p className="mt-2 text-gray-300">
+                      1 pcs Box • 60 pcs Master Carton
                     </p>
                   </div>
                 </Link>
@@ -157,8 +160,8 @@ export default function Products() {
                     <h3 className="text-xl font-bold text-yellow-300">
                       9W Metallic RGB Lamp
                     </h3>
-                    <p className="text-gray-300 mt-2">
-                      Color Rotating Premium Series
+                    <p className="mt-2 text-gray-300">
+                      1 pcs Box • 25 pcs Master Carton
                     </p>
                   </div>
                 </Link>
@@ -188,8 +191,8 @@ export default function Products() {
           <h3 className="text-xl font-bold text-yellow-300">
             4W Gramin LED Bulb
           </h3>
-          <p className="text-gray-300 mt-2">
-            Energy saving • Durable build • Rural series
+          <p className="mt-2 text-gray-300">
+            1 pcs Box • 20 pcs Outer Box • 300 pcs Master Carton
           </p>
         </div>
       </Link>
@@ -199,8 +202,8 @@ export default function Products() {
           <h3 className="text-xl font-bold text-yellow-300">
             6W Gramin LED Bulb
           </h3>
-          <p className="text-gray-300 mt-2">
-            High efficiency • Everyday lighting
+          <p className="mt-2 text-gray-300">
+            1 pcs Box • 20 pcs Outer Box • 180 pcs Master Carton
           </p>
         </div>
       </Link>
@@ -210,8 +213,8 @@ export default function Products() {
           <h3 className="text-xl font-bold text-yellow-300">
             9W Gramin LED Bulb
           </h3>
-          <p className="text-gray-300 mt-2">
-            Bright output • Rural lighting solution
+          <p className="mt-2 text-gray-300">
+            1 pcs Box • 20 pcs Outer Box • 200 pcs Master Carton
           </p>
         </div>
       </Link>
@@ -236,24 +239,24 @@ export default function Products() {
 
               <div className="mt-10 grid md:grid-cols-2 gap-8">
 
-                <Link href="/products/pixel-5w">
+                <Link href="/products/pixel-10w-warmwhite">
                   <div className="bg-[#1f0630] p-6 rounded-lg hover:scale-105 transition cursor-pointer glow">
                     <h3 className="text-xl font-bold text-yellow-300">
-                      5W Pixel LED Bulb
+                      Pixel 10W Warm White
                     </h3>
                     <p className="text-gray-300 mt-2">
-                      Digital IC Control • Multi Pattern Lighting
+                      2 Wire Copper • 240V AC
                     </p>
                   </div>
                 </Link>
 
-                <Link href="/products/pixel-10w">
+                <Link href="/products/pixel-ws2811-12w">
                   <div className="bg-[#1f0630] p-6 rounded-lg hover:scale-105 transition cursor-pointer glow">
                     <h3 className="text-xl font-bold text-yellow-300">
-                      10W Pixel LED Bulb
+                      Pixel LED WS2811 RGB (12W / 12V DC)
                     </h3>
                     <p className="text-gray-300 mt-2">
-                      High Brightness • Programmable Effects
+                      Available in RGB & Warm White • With Wire
                     </p>
                   </div>
                 </Link>
