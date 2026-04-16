@@ -1,0 +1,394 @@
+import { ObjectId } from "mongodb";
+import { getDb } from "@/lib/mongodb";
+import { type OrderRecord, type ProductRecord } from "@/lib/shop-schema";
+
+const SEEDED_PRODUCTS: ProductRecord[] = [
+  {
+    slug: "fridge",
+    title: "1W Fridge LED Bulb",
+    description: "Compact LED bulb designed for refrigerators and small fixtures.",
+    rangeKey: "standard-led",
+    price: 0,
+    currency: "INR",
+    images: [
+      "/products/fridge/1 W , E-12 Crystal.jpg",
+      "/products/fridge/1 W , E-12 Milky.jpg",
+      "/products/fridge/1 W , E-14 Crystal.jpg",
+      "/products/fridge/1 W , E-14 Milky.jpg",
+    ],
+    colors: ["Crystal", "Milky"],
+    types: ["E-12", "E-14"],
+    specs: ["Long life", "Low power consumption", "Fridge compatible"],
+    cardMeta: "50 pcs jar • 1800 pcs master carton",
+    cardDetail: "E-12 Crystal, E-12 Milky, E-14 Crystal, E-14 Milky",
+    active: true,
+    stock: 100,
+  },
+  {
+    slug: "candle",
+    title: "5W Candle LED Bulb",
+    description: "Elegant candle-shaped LED lamp for decorative interiors.",
+    rangeKey: "standard-led",
+    price: 0,
+    currency: "INR",
+    images: [
+      "/products/candle/5W Candle B-22 Crystal.jpg",
+      "/products/candle/5W Candle B-22 Warm White.jpg",
+      "/products/candle/5W Candle B-22 White.jpg",
+      "/products/candle/5W Candle E-14 Crystal.jpg",
+      "/products/candle/5W Candle E-14 Warm White.jpg",
+      "/products/candle/5W Candle E-14 White.jpg",
+    ],
+    colors: ["Crystal", "Warm White", "White"],
+    types: ["B-22", "E-14"],
+    specs: ["Decorative design", "Energy saving", "Premium finish"],
+    cardMeta: "20 pcs box • 300 pcs master carton",
+    cardDetail: "B-22 & E-14 — Warm White, White, Crystal",
+    active: true,
+    stock: 100,
+  },
+  {
+    slug: "half",
+    title: "0.5W LED Bulb",
+    description: "Mini decorative LED bulb ideal for festive and decorative lighting.",
+    rangeKey: "half-watt-range",
+    price: 0,
+    currency: "INR",
+    images: [
+      "/products/half/B22/0.5 W Blue.jpg",
+      "/products/half/B22/0.5 W Green.jpg",
+      "/products/half/B22/0.5 W Orange.jpg",
+      "/products/half/B22/0.5 W Pink.jpg",
+      "/products/half/B22/0.5 W Red.jpg",
+      "/products/half/B22/0.5 W RGB.jpg",
+      "/products/half/B22/0.5 W Warm White.jpg",
+      "/products/half/B22/0.5 W White.jpg",
+      "/products/half/B22/0.5 W Yellow.jpg",
+      "/products/half/E27/0.5 W Blue.jpg",
+      "/products/half/E27/0.5 W Green.jpg",
+      "/products/half/E27/0.5 W Orange.jpg",
+      "/products/half/E27/0.5 W Pink.jpg",
+      "/products/half/E27/0.5 W Red.jpg",
+      "/products/half/E27/0.5 W RGB.jpg",
+      "/products/half/E27/0.5 W Warm White.jpg",
+      "/products/half/E27/0.5 W White.jpg",
+      "/products/half/E27/0.5 W Yellow.jpg",
+    ],
+    colors: ["Blue", "Green", "Orange", "Pink", "Red", "RGB", "Warm White", "White", "Yellow"],
+    types: ["B22", "E27"],
+    specs: ["Energy efficient", "Multi-color variants", "6 pcs Blister Pack • 360 pcs Master Carton"],
+    cardMeta: "6 pcs Blister Pack • 360 pcs Master Carton",
+    cardDetail: "B22, E27",
+    active: true,
+    stock: 100,
+  },
+  {
+    slug: "half-2pin",
+    title: "0.5W 2-Pin Plug-in LED",
+    description: "Decorative 2-pin plug-in mini LED bulb.",
+    rangeKey: "half-watt-range",
+    price: 0,
+    currency: "INR",
+    images: [
+      "/products/half-2pin/Blue.jpg",
+      "/products/half-2pin/Green.jpg",
+      "/products/half-2pin/Orange.jpg",
+      "/products/half-2pin/Pink.jpg",
+      "/products/half-2pin/Red.jpg",
+      "/products/half-2pin/RGB.jpg",
+      "/products/half-2pin/Warm White.jpg",
+      "/products/half-2pin/White.jpg",
+      "/products/half-2pin/Yellow.jpg",
+    ],
+    colors: ["Blue", "Green", "Orange", "Pink", "Red", "RGB", "Warm White", "White", "Yellow"],
+    types: ["2-Pin"],
+    specs: ["Decorative series", "Energy efficient", "Multiple color options", "10 pcs Box • 300 pcs Master Carton"],
+    cardMeta: "10 pcs Box • 300 pcs Master Carton",
+    active: true,
+    stock: 100,
+  },
+  {
+    slug: "half-prism",
+    title: "0.5W Prism LED",
+    description: "Prism style decorative LED bulb.",
+    rangeKey: "half-watt-range",
+    price: 0,
+    currency: "INR",
+    images: [
+      "/products/half-prism/Blue.jpg",
+      "/products/half-prism/Green.jpg",
+      "/products/half-prism/Orange.jpg",
+      "/products/half-prism/Pink.jpg",
+      "/products/half-prism/Red.jpg",
+      "/products/half-prism/RGB.jpg",
+      "/products/half-prism/White.jpg",
+      "/products/half-prism/Yellow.jpg",
+    ],
+    colors: ["Blue", "Green", "Orange", "Pink", "Red", "RGB", "White", "Yellow"],
+    types: ["Prism"],
+    specs: ["High brightness", "Decorative lighting", "Festival use", "6 pcs Blister Packing • 360 pcs Master Carton"],
+    cardMeta: "6 pcs Blister Packing • 360 pcs Master Carton",
+    active: true,
+    stock: 100,
+  },
+  {
+    slug: "flower",
+    title: "5W Metallic Flower RGB Lamp",
+    description: "Flower-shaped decorative RGB lamp.",
+    rangeKey: "nakshatra-range",
+    price: 0,
+    currency: "INR",
+    images: ["/products/flower/5W Metallic Flower RGB Lamp.jpg"],
+    colors: ["RGB"],
+    types: ["5W"],
+    specs: ["Festival lighting", "Smart IC design", "Decorative series", "1 pcs Box • 20 pcs Outer Box • 200 pcs Master Carton"],
+    cardMeta: "1 pcs Box • 20 pcs Outer Box • 200 pcs Master Carton",
+    active: true,
+    stock: 100,
+  },
+  {
+    slug: "jumbo",
+    title: "12W Metallic Big Jumbo RGB",
+    description: "Premium rotating jumbo RGB lamp.",
+    rangeKey: "nakshatra-range",
+    price: 0,
+    currency: "INR",
+    images: [
+      "/products/jumbo/12W Metallic Big Jumbo RGB Golden.jpg",
+      "/products/jumbo/12W Metallic Big Jumbo RGB Blue.jpg",
+      "/products/jumbo/12W Metallic Big Jumbo RGB Pink.jpg",
+    ],
+    colors: ["Golden", "Blue", "Pink"],
+    types: ["12W"],
+    specs: ["High brightness", "Smart IC Rotation PCB", "Decorative lighting", "1 pcs Box • 60 pcs Master Carton"],
+    cardMeta: "1 pcs Box • 60 pcs Master Carton",
+    active: true,
+    stock: 100,
+  },
+  {
+    slug: "jumbomotor",
+    title: "12W Big Jumbo With Motor RGB",
+    description: "Motor powered rotating jumbo decorative lamp.",
+    rangeKey: "nakshatra-range",
+    price: 0,
+    currency: "INR",
+    images: ["/products/jumbomotor/12W Big Jumbo With Motor RGB.jpg"],
+    colors: ["RGB"],
+    types: ["Motor Version"],
+    specs: ["Motor powered", "Steel Motor Shafting", "Festival lighting", "Premium build", "1 pcs Box • 60 pcs Master Carton"],
+    cardMeta: "1 pcs Box • 60 pcs Master Carton",
+    active: true,
+    stock: 100,
+  },
+  {
+    slug: "9-watt",
+    title: "9W Metallic RGB Lamp",
+    description: "Compact RGB decorative lamp.",
+    rangeKey: "nakshatra-range",
+    price: 0,
+    currency: "INR",
+    images: ["/products/9 watt/9W Metallic RGB.jpg"],
+    colors: ["RGB"],
+    types: ["9W"],
+    specs: ["Color rotation", "Energy efficient", "Decorative use", "1 pcs Box • 25 pcs Master Carton"],
+    cardMeta: "1 pcs Box • 25 pcs Master Carton",
+    active: true,
+    stock: 100,
+  },
+  {
+    slug: "gramin-4w",
+    title: "4W Gramin LED Bulb",
+    description: "Affordable rural lighting solution.",
+    rangeKey: "gramin-range",
+    price: 0,
+    currency: "INR",
+    images: ["/products/gramin/4W B-22 White.jpg"],
+    colors: ["White"],
+    types: ["4W"],
+    specs: ["Energy efficient", "Durable build", "Rural lighting series", "1 pcs Box • 20 pcs Outer Box • 300 pcs Master Carton"],
+    cardMeta: "1 pcs Box • 20 pcs Outer Box • 300 pcs Master Carton",
+    active: true,
+    stock: 100,
+  },
+  {
+    slug: "gramin-6w",
+    title: "6W Gramin LED Bulb",
+    description: "Affordable rural lighting solution.",
+    rangeKey: "gramin-range",
+    price: 0,
+    currency: "INR",
+    images: ["/products/gramin/6W B-22 White.jpg"],
+    colors: ["White"],
+    types: ["6W"],
+    specs: ["Energy efficient", "Durable build", "Rural lighting series", "1 pcs Box • 20 pcs Outer Box • 180 pcs Master Carton"],
+    cardMeta: "1 pcs Box • 20 pcs Outer Box • 180 pcs Master Carton",
+    active: true,
+    stock: 100,
+  },
+  {
+    slug: "gramin-9w",
+    title: "9W Gramin LED Bulb",
+    description: "Affordable rural lighting solution.",
+    rangeKey: "gramin-range",
+    price: 0,
+    currency: "INR",
+    images: ["/products/gramin/9W B-22 White.jpg"],
+    colors: ["White"],
+    types: ["9W"],
+    specs: ["Energy efficient", "Durable build", "Rural lighting series", "1 pcs Box • 20 pcs Outer Box • 200 pcs Master Carton"],
+    cardMeta: "1 pcs Box • 20 pcs Outer Box • 200 pcs Master Carton",
+    active: true,
+    stock: 100,
+  },
+  {
+    slug: "pixel-10w-warmwhite",
+    title: "Pixel LED Bulb 10W Warm White",
+    description: "High quality pixel LED in Warm White.",
+    rangeKey: "pixel-led-range",
+    price: 0,
+    currency: "INR",
+    images: ["/products/pixel/10W Warm White with Wire.jpg"],
+    colors: ["Warm White"],
+    types: ["10W"],
+    specs: ["2 Wire Copper", "240V AC", "Decorative Lighting"],
+    cardMeta: "1 pcs Box • 20 pcs Outer Box • 300 pcs Master Carton",
+    active: true,
+    stock: 100,
+  },
+  {
+    slug: "pixel-ws2811-12w",
+    title: "Pixel LED Bulb WS2811 RGB / Warm White (12W / 12V DC)",
+    description: "WS2811 digital pixel LED module suitable for decorative and architectural lighting.",
+    rangeKey: "pixel-led-range",
+    price: 0,
+    currency: "INR",
+    images: [
+      "/products/pixel/12W RGB with Wire.jpg",
+      "/products/pixel/12W Warm White with Wire.jpg",
+    ],
+    colors: ["RGB", "Warm White"],
+    types: ["12W / 12V DC"],
+    specs: ["12 Watt Power", "12 LED Chips", "12V DC Input", "WS2811 IC Control", "Available in RGB and Warm White"],
+    cardMeta: "1 pcs Box • 20 pcs Outer Box • 300 pcs Master Carton",
+    active: true,
+    stock: 100,
+  },
+];
+
+function serializeId<T extends { _id?: ObjectId | string }>(item: T) {
+  if (!item._id) return item;
+  return {
+    ...item,
+    _id: typeof item._id === "string" ? item._id : item._id.toString(),
+  };
+}
+
+function productCollection() {
+  return getDb().then((db) => db.collection<ProductRecord>("products"));
+}
+
+function orderCollection() {
+  return getDb().then((db) => db.collection<OrderRecord>("orders"));
+}
+
+export async function ensureSeedProducts() {
+  const collection = await productCollection();
+  const count = await collection.countDocuments();
+
+  if (count > 0) return;
+
+  const now = new Date().toISOString();
+
+  await collection.insertMany(
+    SEEDED_PRODUCTS.map((product) => ({
+      ...product,
+      createdAt: now,
+      updatedAt: now,
+    })),
+  );
+}
+
+export async function getProducts(options?: { activeOnly?: boolean }) {
+  await ensureSeedProducts();
+  const collection = await productCollection();
+  const query = options?.activeOnly ? { active: true } : {};
+  const products = await collection.find(query).sort({ rangeKey: 1, title: 1 }).toArray();
+  return products.map((item) => serializeId(item));
+}
+
+export async function getProductBySlug(slug: string) {
+  await ensureSeedProducts();
+  const collection = await productCollection();
+  const product = await collection.findOne({ slug });
+  return product ? serializeId(product) : null;
+}
+
+export async function getProductById(id: string) {
+  const collection = await productCollection();
+  const product = await collection.findOne({ _id: new ObjectId(id) });
+  return product ? serializeId(product) : null;
+}
+
+export async function createProduct(product: ProductRecord) {
+  const collection = await productCollection();
+  const now = new Date().toISOString();
+  const result = await collection.insertOne({
+    ...product,
+    createdAt: now,
+    updatedAt: now,
+  });
+  return getProductById(result.insertedId.toString());
+}
+
+export async function updateProduct(id: string, product: Partial<ProductRecord>) {
+  const collection = await productCollection();
+  await collection.updateOne(
+    { _id: new ObjectId(id) },
+    {
+      $set: {
+        ...product,
+        updatedAt: new Date().toISOString(),
+      },
+    },
+  );
+  return getProductById(id);
+}
+
+export async function deleteProduct(id: string) {
+  const collection = await productCollection();
+  await collection.deleteOne({ _id: new ObjectId(id) });
+}
+
+export async function createOrder(order: OrderRecord) {
+  const collection = await orderCollection();
+  const now = new Date().toISOString();
+  const result = await collection.insertOne({
+    ...order,
+    createdAt: now,
+    updatedAt: now,
+  });
+  const saved = await collection.findOne({ _id: result.insertedId });
+  return saved ? serializeId(saved) : null;
+}
+
+export async function getOrders() {
+  const collection = await orderCollection();
+  const orders = await collection.find({}).sort({ createdAt: -1 }).toArray();
+  return orders.map((item) => serializeId(item));
+}
+
+export async function updateOrder(id: string, updates: Partial<OrderRecord>) {
+  const collection = await orderCollection();
+  await collection.updateOne(
+    { _id: new ObjectId(id) },
+    {
+      $set: {
+        ...updates,
+        updatedAt: new Date().toISOString(),
+      },
+    },
+  );
+
+  const saved = await collection.findOne({ _id: new ObjectId(id) });
+  return saved ? serializeId(saved) : null;
+}
