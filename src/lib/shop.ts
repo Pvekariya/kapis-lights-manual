@@ -1,6 +1,9 @@
-import { ObjectId } from "mongodb";
+import { ObjectId, type Collection } from "mongodb";
 import { getDb } from "@/lib/mongodb";
 import { type OrderRecord, type ProductRecord } from "@/lib/shop-schema";
+
+type ProductDocument = Omit<ProductRecord, "_id"> & { _id?: ObjectId | string };
+type OrderDocument = Omit<OrderRecord, "_id"> & { _id?: ObjectId | string };
 
 const SEEDED_PRODUCTS: ProductRecord[] = [
   {
@@ -275,20 +278,21 @@ const SEEDED_PRODUCTS: ProductRecord[] = [
   },
 ];
 
-function serializeId<T extends { _id?: ObjectId | string }>(item: T) {
-  if (!item._id) return item;
+function serializeId<T extends { _id?: ObjectId | string }>(item: T): Omit<T, "_id"> & { _id?: string } {
+  const { _id, ...rest } = item;
+  if (!_id) return rest;
   return {
-    ...item,
-    _id: typeof item._id === "string" ? item._id : item._id.toString(),
+    ...rest,
+    _id: typeof _id === "string" ? _id : _id.toString(),
   };
 }
 
-function productCollection() {
-  return getDb().then((db) => db.collection<ProductRecord>("products"));
+function productCollection(): Promise<Collection<ProductDocument>> {
+  return getDb().then((db) => db.collection<ProductDocument>("products"));
 }
 
-function orderCollection() {
-  return getDb().then((db) => db.collection<OrderRecord>("orders"));
+function orderCollection(): Promise<Collection<OrderDocument>> {
+  return getDb().then((db) => db.collection<OrderDocument>("orders"));
 }
 
 export async function ensureSeedProducts() {
@@ -325,7 +329,7 @@ export async function getProductBySlug(slug: string) {
 
 export async function getProductById(id: string) {
   const collection = await productCollection();
-  const product = await collection.findOne({ id: new ObjectId(id) });
+  const product = await collection.findOne({ _id: new ObjectId(id) });
   return product ? serializeId(product) : null;
 }
 
@@ -343,7 +347,7 @@ export async function createProduct(product: ProductRecord) {
 export async function updateProduct(id: string, product: Partial<ProductRecord>) {
   const collection = await productCollection();
   await collection.updateOne(
-    { id: new ObjectId(id) },
+    { _id: new ObjectId(id) },
     {
       $set: {
         ...product,
@@ -356,7 +360,7 @@ export async function updateProduct(id: string, product: Partial<ProductRecord>)
 
 export async function deleteProduct(id: string) {
   const collection = await productCollection();
-  await collection.deleteOne({ id: new ObjectId(id) });
+  await collection.deleteOne({ _id: new ObjectId(id) });
 }
 
 export async function createOrder(order: OrderRecord) {
@@ -380,7 +384,7 @@ export async function getOrders() {
 export async function updateOrder(id: string, updates: Partial<OrderRecord>) {
   const collection = await orderCollection();
   await collection.updateOne(
-    { id: new ObjectId(id) },
+    { _id: new ObjectId(id) },
     {
       $set: {
         ...updates,
@@ -389,6 +393,6 @@ export async function updateOrder(id: string, updates: Partial<OrderRecord>) {
     },
   );
 
-  const saved = await collection.findOne({ id: new ObjectId(id) });
+  const saved = await collection.findOne({ _id: new ObjectId(id) });
   return saved ? serializeId(saved) : null;
 }
