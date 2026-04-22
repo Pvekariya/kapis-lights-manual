@@ -10,7 +10,7 @@ const fadeUp = {
     transition: {
       duration: 0.6,
       delay: 0.1 * i,
-      ease: [0.16, 1, 0.3, 1],
+      ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
     },
   }),
 };
@@ -37,7 +37,7 @@ export default function AboutContent() {
             y: 0,
             transition: {
               duration: 0.6,
-              ease: [0.16, 1, 0.3, 1],
+              ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
             },
           },
         }}
@@ -127,7 +127,7 @@ export default function AboutContent() {
             y: 0,
             transition: {
               duration: 0.7,
-              ease: [0.16, 1, 0.3, 1],
+              ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
               staggerChildren: 0.16,
             },
           },
@@ -163,7 +163,7 @@ export default function AboutContent() {
                   transition: {
                     duration: 0.55,
                     delay: 0.05 * idx,
-                    ease: [0.16, 1, 0.3, 1],
+                    ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
                   },
                 },
               }}
@@ -180,4 +180,3 @@ export default function AboutContent() {
     </main>
   );
 }
-
