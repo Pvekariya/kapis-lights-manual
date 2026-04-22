@@ -4,6 +4,7 @@ import { type OrderRecord, type ProductRecord } from "@/lib/shop-schema";
 
 type ProductDocument = Omit<ProductRecord, "_id"> & { _id?: ObjectId | string };
 type OrderDocument = Omit<OrderRecord, "_id"> & { _id?: ObjectId | string };
+let seedProductsChecked = false;
 
 const SEEDED_PRODUCTS: ProductRecord[] = [
   {
@@ -296,10 +297,15 @@ function orderCollection(): Promise<Collection<OrderDocument>> {
 }
 
 export async function ensureSeedProducts() {
+  if (seedProductsChecked) return;
+
   const collection = await productCollection();
   const count = await collection.countDocuments();
 
-  if (count > 0) return;
+  if (count > 0) {
+    seedProductsChecked = true;
+    return;
+  }
 
   const now = new Date().toISOString();
 
@@ -310,6 +316,8 @@ export async function ensureSeedProducts() {
       updatedAt: now,
     })),
   );
+
+  seedProductsChecked = true;
 }
 
 export async function getProducts(options?: { activeOnly?: boolean }) {
