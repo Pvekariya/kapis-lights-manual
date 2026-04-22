@@ -40,6 +40,7 @@ type ProductFormState = {
 
 type ProductFilter = "all" | "active";
 type OrderFilter = "all" | "new" | "pending" | "paid";
+type DashboardPanel = "activeProducts" | "newOrders" | "pendingPayments" | "paidOrders" | null;
 
 const EMPTY_FORM: ProductFormState = {
   slug: "",
@@ -110,6 +111,7 @@ export default function AdminPage() {
   const [productFilter, setProductFilter] = useState<ProductFilter>("all");
   const [orderFilter, setOrderFilter] = useState<OrderFilter>("all");
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [dashboardPanel, setDashboardPanel] = useState<DashboardPanel>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const productsRef = useRef<HTMLElement>(null);
   const ordersRef = useRef<HTMLElement>(null);
@@ -297,7 +299,7 @@ export default function AdminPage() {
       value: activeProducts,
       onClick: () => {
         setProductFilter("active");
-        scrollToEntry(productsRef);
+        setDashboardPanel("activeProducts");
       },
     },
     {
@@ -305,7 +307,7 @@ export default function AdminPage() {
       value: newOrders,
       onClick: () => {
         setOrderFilter("new");
-        scrollToEntry(ordersRef);
+        setDashboardPanel("newOrders");
       },
     },
     {
@@ -313,7 +315,7 @@ export default function AdminPage() {
       value: pendingPayments,
       onClick: () => {
         setOrderFilter("pending");
-        scrollToEntry(ordersRef);
+        setDashboardPanel("pendingPayments");
       },
     },
     {
@@ -321,10 +323,29 @@ export default function AdminPage() {
       value: paidOrders,
       onClick: () => {
         setOrderFilter("paid");
-        scrollToEntry(ordersRef);
+        setDashboardPanel("paidOrders");
       },
     },
   ];
+  const dashboardPanelTitle =
+    dashboardPanel === "activeProducts"
+      ? "Active Products"
+      : dashboardPanel === "newOrders"
+        ? "New Orders"
+        : dashboardPanel === "pendingPayments"
+          ? "Pending Payments"
+          : dashboardPanel === "paidOrders"
+            ? "Paid Orders"
+            : "";
+  const dashboardPanelProducts = dashboardPanel === "activeProducts" ? products.filter((product) => product.active) : [];
+  const dashboardPanelOrders =
+    dashboardPanel === "newOrders"
+      ? orders.filter((order) => (order.orderStatus || "new") === "new")
+      : dashboardPanel === "pendingPayments"
+        ? orders.filter((order) => (order.paymentStatus || "cod") === "pending")
+        : dashboardPanel === "paidOrders"
+          ? orders.filter((order) => order.paymentStatus === "paid")
+          : [];
 
   if (checkingSession) {
     return (
@@ -398,6 +419,74 @@ export default function AdminPage() {
                   </button>
                 ))}
               </div>
+
+              {dashboardPanel && (
+                <section className="card" style={{ padding: 24 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", marginBottom: 16 }}>
+                    <h2 style={{ fontFamily: "'Cinzel', serif", color: "#f5c842" }}>{dashboardPanelTitle}</h2>
+                    <button type="button" className="btn-outline" style={{ padding: "8px 14px" }} onClick={() => setDashboardPanel(null)}>
+                      Close
+                    </button>
+                  </div>
+
+                  {dashboardPanel === "activeProducts" ? (
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
+                      {dashboardPanelProducts.map((product) => (
+                        <button
+                          key={product._id || product.slug}
+                          type="button"
+                          className="admin-entry-card"
+                          style={{ border: "1px solid rgba(245,200,66,0.12)", borderRadius: 14, padding: 16, textAlign: "left" }}
+                          onClick={() => handleEditProduct(product)}
+                        >
+                          <strong style={{ color: "#f5c842", fontFamily: "'Cinzel', serif" }}>{product.title}</strong>
+                          <p style={{ color: "rgba(168,146,192,0.75)", fontSize: "0.84rem", marginTop: 8 }}>
+                            {product.slug} • Rs. {product.price} • Stock {product.stock}
+                          </p>
+                          <p style={{ color: "rgba(168,146,192,0.62)", fontSize: "0.8rem", marginTop: 6 }}>{product.cardMeta}</p>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12 }}>
+                      {dashboardPanelOrders.map((order, index) => {
+                        const orderKey = order._id || `${order.email}-${index}`;
+                        return (
+                          <button
+                            key={orderKey}
+                            type="button"
+                            className="admin-entry-card"
+                            style={{ border: "1px solid rgba(245,200,66,0.12)", borderRadius: 14, padding: 16, textAlign: "left" }}
+                            onClick={() => {
+                              setSelectedOrderId(orderKey);
+                              setOrderFilter(
+                                dashboardPanel === "newOrders"
+                                  ? "new"
+                                  : dashboardPanel === "pendingPayments"
+                                    ? "pending"
+                                    : "paid",
+                              );
+                              scrollToEntry(ordersRef);
+                            }}
+                          >
+                            <strong style={{ color: "#f5c842" }}>{order.customerName || "Unnamed Order"}</strong>
+                            <p style={{ color: "rgba(168,146,192,0.78)", fontSize: "0.84rem", marginTop: 8 }}>
+                              Rs. {order.totalAmount} • {(order.paymentMethod || "cod").toUpperCase()} • {order.paymentStatus || "pending"}
+                            </p>
+                            <p style={{ color: "rgba(168,146,192,0.62)", fontSize: "0.8rem", marginTop: 6 }}>
+                              {order.email} • {order.phone}
+                            </p>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {dashboardPanelProducts.length === 0 && dashboardPanelOrders.length === 0 && (
+                    <p style={{ color: "rgba(168,146,192,0.75)" }}>No matching entries.</p>
+                  )}
+                </section>
+              )}
 
               <section className="card" style={{ padding: 24 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "start", flexWrap: "wrap" }}>
