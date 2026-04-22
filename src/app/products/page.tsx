@@ -9,8 +9,6 @@ import PageWrapper from "@/components/PageWrapper";
 import { PRODUCT_RANGES, groupProductsByRange, type ProductRecord } from "@/lib/shop-schema";
 
 function ProductCard({ product, delay = 0 }: { product: ProductRecord; delay?: number }) {
-  const image = product.images[0];
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -29,21 +27,6 @@ function ProductCard({ product, delay = 0 }: { product: ProductRecord; delay?: n
             height: "100%",
           }}
         >
-          {image && (
-            <div
-              style={{
-                aspectRatio: "4 / 3",
-                margin: "-12px -8px 20px",
-                borderRadius: 12,
-                overflow: "hidden",
-                border: "1px solid rgba(245,200,66,0.12)",
-                background: "rgba(0,0,0,0.16)",
-              }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={image} alt={product.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-            </div>
-          )}
           <h3
             style={{
               fontFamily: "'Cinzel', serif",

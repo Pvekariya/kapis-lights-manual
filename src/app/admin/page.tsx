@@ -248,10 +248,10 @@ export default function AdminPage() {
     try {
       const uploadedImages = (await Promise.all(files.map(readFileAsDataUrl))).filter(Boolean);
       setForm((current) => {
-        const images = [...parseMultiline(current.images), ...uploadedImages];
+        const images = [...uploadedImages, ...parseMultiline(current.images)];
         return { ...current, images: images.join("\n") };
       });
-      setMessage(`${uploadedImages.length} image${uploadedImages.length === 1 ? "" : "s"} added. Save the product to keep them.`);
+      setMessage(`${uploadedImages.length} image${uploadedImages.length === 1 ? "" : "s"} added as primary. Save the product to update the website.`);
     } catch {
       setMessage("Unable to read selected image.");
     } finally {

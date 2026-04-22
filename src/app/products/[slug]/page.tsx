@@ -44,8 +44,10 @@ export default function ProductPage() {
     if (!product) return [];
 
     const shouldSkipType = product.types.length <= 1;
+    const uploadedImages = product.images.filter((img) => img.startsWith("data:image/"));
+    const catalogImages = product.images.filter((img) => !img.startsWith("data:image/"));
 
-    let images = product.images.filter((img) => {
+    const matchingCatalogImages = catalogImages.filter((img) => {
       const lowerImg = img.toLowerCase();
       const matchesType =
         !shouldSkipType && type ? lowerImg.includes(type.toLowerCase()) : true;
@@ -62,6 +64,8 @@ export default function ProductPage() {
 
       return matchesType && matchesColor;
     });
+
+    let images = [...uploadedImages, ...matchingCatalogImages];
 
     if (!images.length) {
       images = product.images;
