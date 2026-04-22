@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageWrapper from "@/components/PageWrapper";
@@ -37,6 +37,9 @@ type ProductFormState = {
   specs: string;
   active: boolean;
 };
+
+type ProductFilter = "all" | "active";
+type OrderFilter = "all" | "new" | "pending" | "paid";
 
 const EMPTY_FORM: ProductFormState = {
   slug: "",
@@ -84,6 +87,15 @@ function mapProductToForm(product: ProductRecord): ProductFormState {
   };
 }
 
+function readFileAsDataUrl(file: File) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : "");
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
 export default function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
@@ -95,6 +107,16 @@ export default function AdminPage() {
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
   const [orderSavingId, setOrderSavingId] = useState<string | null>(null);
+  const [productFilter, setProductFilter] = useState<ProductFilter>("all");
+  const [orderFilter, setOrderFilter] = useState<OrderFilter>("all");
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const productsRef = useRef<HTMLElement>(null);
+  const ordersRef = useRef<HTMLElement>(null);
+
+  function scrollToEntry(ref: React.RefObject<HTMLElement | HTMLFormElement | null>) {
+    ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   async function refreshData() {
     const [productsResponse, ordersResponse, paymentsResponse] = await Promise.all([
@@ -210,6 +232,31 @@ export default function AdminPage() {
     await refreshData();
   }
 
+  function handleEditProduct(product: ProductRecord) {
+    setForm(mapProductToForm(product));
+    scrollToEntry(formRef);
+  }
+
+  async function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(event.target.files || []);
+    if (files.length === 0) return;
+
+    setMessage("Preparing uploaded image...");
+
+    try {
+      const uploadedImages = (await Promise.all(files.map(readFileAsDataUrl))).filter(Boolean);
+      setForm((current) => {
+        const images = [...parseMultiline(current.images), ...uploadedImages];
+        return { ...current, images: images.join("\n") };
+      });
+      setMessage(`${uploadedImages.length} image${uploadedImages.length === 1 ? "" : "s"} added. Save the product to keep them.`);
+    } catch {
+      setMessage("Unable to read selected image.");
+    } finally {
+      event.currentTarget.value = "";
+    }
+  }
+
   async function handleOrderUpdate(orderId: string, updates: Partial<OrderRecord>) {
     setOrderSavingId(orderId);
     setMessage("");
@@ -233,6 +280,51 @@ export default function AdminPage() {
   const paidOrders = orders.filter((order) => order.paymentStatus === "paid").length;
   const pendingPayments = orders.filter((order) => (order.paymentStatus || "cod") === "pending").length;
   const newOrders = orders.filter((order) => (order.orderStatus || "new") === "new").length;
+  const activeProducts = products.filter((product) => product.active).length;
+  const filteredProducts = useMemo(
+    () => (productFilter === "active" ? products.filter((product) => product.active) : products),
+    [productFilter, products],
+  );
+  const filteredOrders = useMemo(() => {
+    if (orderFilter === "new") return orders.filter((order) => (order.orderStatus || "new") === "new");
+    if (orderFilter === "pending") return orders.filter((order) => (order.paymentStatus || "cod") === "pending");
+    if (orderFilter === "paid") return orders.filter((order) => order.paymentStatus === "paid");
+    return orders;
+  }, [orderFilter, orders]);
+  const dashboardCards = [
+    {
+      label: "Active Products",
+      value: activeProducts,
+      onClick: () => {
+        setProductFilter("active");
+        scrollToEntry(productsRef);
+      },
+    },
+    {
+      label: "New Orders",
+      value: newOrders,
+      onClick: () => {
+        setOrderFilter("new");
+        scrollToEntry(ordersRef);
+      },
+    },
+    {
+      label: "Pending Payments",
+      value: pendingPayments,
+      onClick: () => {
+        setOrderFilter("pending");
+        scrollToEntry(ordersRef);
+      },
+    },
+    {
+      label: "Paid Orders",
+      value: paidOrders,
+      onClick: () => {
+        setOrderFilter("paid");
+        scrollToEntry(ordersRef);
+      },
+    },
+  ];
 
   if (checkingSession) {
     return (
@@ -293,16 +385,17 @@ export default function AdminPage() {
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 16 }}>
-                {[
-                  { label: "Active Products", value: products.filter((product) => product.active).length },
-                  { label: "New Orders", value: newOrders },
-                  { label: "Pending Payments", value: pendingPayments },
-                  { label: "Paid Orders", value: paidOrders },
-                ].map((item) => (
-                  <div key={item.label} className="card" style={{ padding: 20 }}>
+                {dashboardCards.map((item) => (
+                  <button
+                    key={item.label}
+                    type="button"
+                    className="card admin-click-card"
+                    style={{ padding: 20, textAlign: "left" }}
+                    onClick={item.onClick}
+                  >
                     <div style={{ color: "#f5c842", fontFamily: "'Cinzel', serif", fontSize: "1.25rem" }}>{item.value}</div>
                     <div style={{ color: "rgba(168,146,192,0.8)", fontSize: "0.85rem", marginTop: 6 }}>{item.label}</div>
-                  </div>
+                  </button>
                 ))}
               </div>
 
@@ -346,7 +439,7 @@ export default function AdminPage() {
               </section>
 
               <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 24 }}>
-                <form onSubmit={handleSaveProduct} className="card" style={{ padding: 24 }}>
+                <form ref={formRef} onSubmit={handleSaveProduct} className="card" style={{ padding: 24 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", marginBottom: 18 }}>
                     <h2 style={{ fontFamily: "'Cinzel', serif", color: "#f5c842" }}>
                       {form._id ? "Edit Product" : "Add Product"}
@@ -411,8 +504,30 @@ export default function AdminPage() {
                   </div>
 
                   <div style={{ display: "grid", gap: 16, marginTop: 16 }}>
+                    <div style={{ display: "grid", gap: 8 }}>
+                      <span>Product Pictures</span>
+                      <input type="file" accept="image/*" multiple onChange={(event) => void handleImageUpload(event)} />
+                      <textarea
+                        rows={5}
+                        value={form.images}
+                        onChange={(event) => setForm((current) => ({ ...current, images: event.target.value }))}
+                        placeholder="Upload images from device or paste one image path / URL per line"
+                      />
+                      <small style={{ color: "rgba(168,146,192,0.66)" }}>
+                        Upload from device, or keep using one image path or URL per line.
+                      </small>
+                      {parseMultiline(form.images).length > 0 && (
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(92px, 1fr))", gap: 10 }}>
+                          {parseMultiline(form.images).slice(0, 8).map((image, index) => (
+                            <div key={`${image.slice(0, 24)}-${index}`} style={{ border: "1px solid rgba(245,200,66,0.14)", borderRadius: 10, overflow: "hidden", aspectRatio: "1 / 1", background: "rgba(0,0,0,0.16)" }}>
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                     {[
-                      { key: "images", label: "Image URLs", hint: "One image path or URL per line" },
                       { key: "colors", label: "Colors", hint: "One color per line" },
                       { key: "types", label: "Types", hint: "One type per line" },
                       { key: "specs", label: "Specifications", hint: "One spec per line" },
@@ -436,11 +551,26 @@ export default function AdminPage() {
                 </form>
 
                 <div style={{ display: "grid", gap: 24 }}>
-                  <section className="card" style={{ padding: 24 }}>
-                    <h2 style={{ fontFamily: "'Cinzel', serif", color: "#f5c842", marginBottom: 18 }}>Products</h2>
+                  <section ref={productsRef} className="card" style={{ padding: 24 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", marginBottom: 18 }}>
+                      <h2 style={{ fontFamily: "'Cinzel', serif", color: "#f5c842" }}>
+                        Products{productFilter === "active" ? " • Active" : ""}
+                      </h2>
+                      {productFilter !== "all" && (
+                        <button type="button" className="btn-outline" style={{ padding: "8px 14px" }} onClick={() => setProductFilter("all")}>
+                          Show All
+                        </button>
+                      )}
+                    </div>
                     <div style={{ display: "grid", gap: 12, maxHeight: 620, overflowY: "auto" }}>
-                      {products.map((product) => (
-                        <div key={product._id} style={{ border: "1px solid rgba(245,200,66,0.12)", borderRadius: 14, padding: 16 }}>
+                      {filteredProducts.map((product) => (
+                        <button
+                          key={product._id}
+                          type="button"
+                          className="admin-entry-card"
+                          style={{ border: "1px solid rgba(245,200,66,0.12)", borderRadius: 14, padding: 16, textAlign: "left" }}
+                          onClick={() => handleEditProduct(product)}
+                        >
                           <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
                             <div>
                               <h3 style={{ color: "#f5c842", fontFamily: "'Cinzel', serif", fontSize: "0.95rem" }}>{product.title}</h3>
@@ -449,29 +579,55 @@ export default function AdminPage() {
                               </p>
                             </div>
                             <div style={{ display: "flex", gap: 8 }}>
-                              <button type="button" className="btn-outline" style={{ padding: "8px 14px" }} onClick={() => setForm(mapProductToForm(product))}>
+                              <button
+                                type="button"
+                                className="btn-outline"
+                                style={{ padding: "8px 14px" }}
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  handleEditProduct(product);
+                                }}
+                              >
                                 Edit
                               </button>
                               {product._id && (
-                                <button type="button" className="btn-outline" style={{ padding: "8px 14px" }} onClick={() => handleDeleteProduct(product._id!)}>
+                                <button
+                                  type="button"
+                                  className="btn-outline"
+                                  style={{ padding: "8px 14px" }}
+                                  onClick={(event) => {
+                                    event.stopPropagation();
+                                    void handleDeleteProduct(product._id!);
+                                  }}
+                                >
                                   Delete
                                 </button>
                               )}
                             </div>
                           </div>
-                        </div>
+                        </button>
                       ))}
                     </div>
                   </section>
 
-                  <section className="card" style={{ padding: 24 }}>
-                    <h2 style={{ fontFamily: "'Cinzel', serif", color: "#f5c842", marginBottom: 18 }}>Orders</h2>
+                  <section ref={ordersRef} className="card" style={{ padding: 24 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", marginBottom: 18 }}>
+                      <h2 style={{ fontFamily: "'Cinzel', serif", color: "#f5c842" }}>
+                        Orders{orderFilter !== "all" ? ` • ${orderFilter}` : ""}
+                      </h2>
+                      {orderFilter !== "all" && (
+                        <button type="button" className="btn-outline" style={{ padding: "8px 14px" }} onClick={() => setOrderFilter("all")}>
+                          Show All
+                        </button>
+                      )}
+                    </div>
                     <p style={{ color: "rgba(168,146,192,0.72)", fontSize: "0.86rem", marginBottom: 14 }}>
                       These orders are received live from the website checkout flow.
                     </p>
                     <div style={{ display: "grid", gap: 12, maxHeight: 420, overflowY: "auto" }}>
-                      {orders.length === 0 && <p style={{ color: "rgba(168,146,192,0.75)" }}>No orders yet.</p>}
-                      {orders.map((order, index) => {
+                      {filteredOrders.length === 0 && <p style={{ color: "rgba(168,146,192,0.75)" }}>No matching orders.</p>}
+                      {filteredOrders.map((order, index) => {
+                        const orderKey = order._id || `${order.email}-${index}`;
                         const paymentMethodLabel = (order.paymentMethod || "cod").toUpperCase();
                         const paymentStatusLabel = order.paymentStatus || (order.paymentMethod === "razorpay" ? "pending" : "cod");
                         const orderStatusLabel = order.orderStatus || "new";
@@ -480,7 +636,21 @@ export default function AdminPage() {
                           : "No items recorded";
 
                         return (
-                        <div key={order._id || `${order.email}-${index}`} style={{ border: "1px solid rgba(245,200,66,0.12)", borderRadius: 14, padding: 16 }}>
+                        <div
+                          key={orderKey}
+                          role="button"
+                          tabIndex={0}
+                          className="admin-entry-card"
+                          style={{
+                            border: selectedOrderId === orderKey ? "1px solid rgba(245,200,66,0.58)" : "1px solid rgba(245,200,66,0.12)",
+                            borderRadius: 14,
+                            padding: 16,
+                          }}
+                          onClick={() => setSelectedOrderId(orderKey)}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter" || event.key === " ") setSelectedOrderId(orderKey);
+                          }}
+                        >
                           <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
                             <strong style={{ color: "#f5c842" }}>{order.customerName}</strong>
                             <span style={{ color: "rgba(168,146,192,0.72)", fontSize: "0.82rem" }}>
@@ -567,6 +737,27 @@ export default function AdminPage() {
         </main>
 
         <style>{`
+          .admin-click-card,
+          .admin-entry-card {
+            width: 100%;
+            color: inherit;
+            background: var(--bg-card);
+            cursor: pointer;
+            transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
+          }
+
+          .admin-click-card:hover,
+          .admin-entry-card:hover {
+            border-color: rgba(245,200,66,0.38) !important;
+            transform: translateY(-1px);
+          }
+
+          .admin-click-card:focus-visible,
+          .admin-entry-card:focus-visible {
+            outline: 2px solid rgba(245,200,66,0.72);
+            outline-offset: 3px;
+          }
+
           @media (max-width: 1100px) {
             div[style*="grid-template-columns: repeat(4, minmax(0, 1fr))"] {
               grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
