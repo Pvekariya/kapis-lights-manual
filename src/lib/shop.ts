@@ -325,7 +325,7 @@ export async function getProductBySlug(slug: string) {
 
 export async function getProductById(id: string) {
   const collection = await productCollection();
-  const product = await collection.findOne({ _id: new ObjectId(id) });
+  const product = await collection.findOne({ id: new ObjectId(id) });
   return product ? serializeId(product) : null;
 }
 
@@ -343,7 +343,7 @@ export async function createProduct(product: ProductRecord) {
 export async function updateProduct(id: string, product: Partial<ProductRecord>) {
   const collection = await productCollection();
   await collection.updateOne(
-    { _id: new ObjectId(id) },
+    { id: new ObjectId(id) },
     {
       $set: {
         ...product,
@@ -356,7 +356,7 @@ export async function updateProduct(id: string, product: Partial<ProductRecord>)
 
 export async function deleteProduct(id: string) {
   const collection = await productCollection();
-  await collection.deleteOne({ _id: new ObjectId(id) });
+  await collection.deleteOne({ id: new ObjectId(id) });
 }
 
 export async function createOrder(order: OrderRecord) {
@@ -380,7 +380,7 @@ export async function getOrders() {
 export async function updateOrder(id: string, updates: Partial<OrderRecord>) {
   const collection = await orderCollection();
   await collection.updateOne(
-    { _id: new ObjectId(id) },
+    { id: new ObjectId(id) },
     {
       $set: {
         ...updates,
@@ -389,6 +389,6 @@ export async function updateOrder(id: string, updates: Partial<OrderRecord>) {
     },
   );
 
-  const saved = await collection.findOne({ _id: new ObjectId(id) });
+  const saved = await collection.findOne({ id: new ObjectId(id) });
   return saved ? serializeId(saved) : null;
 }
